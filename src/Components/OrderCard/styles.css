@@ -1,0 +1,14 @@
+.figure-card {
+  width: 5rem;
+  height: 5rem;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0.5rem; /* similar a rounded-lg en Tailwind */
+}
+
+.figure-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
