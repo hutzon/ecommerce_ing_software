@@ -1,16 +1,17 @@
-import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useRef, useState } from "react";
+import { Link, Navigate } from "react-router-dom";
 import Layout from "../Home/Layout";
 import { ShoppingCartContext } from "../../Context";
 
 function SignIn() {
   const context = useContext(ShoppingCartContext);
   const [view, setView] = useState("user-info");
+  const form = useRef(null);
 
-  //Account
+  //Cuenta
   const account = localStorage.getItem("account");
   const parsedAccount = JSON.parse(account);
-
+  // tiene una cuenta
   const noAccountLocalStorage = parsedAccount
     ? Object.keys(parsedAccount).length === 0
     : true;
@@ -18,6 +19,30 @@ function SignIn() {
     ? Object.keys(context.account).length === 0
     : true;
   const hasUserAnAccount = !noAccountLocalStorage || !noAccountLocalState;
+
+  const handleSignIn = () => {
+    const stringfieldSignOut = JSON.stringify(false);
+    localStorage.setItem("sign-out", stringfieldSignOut);
+    context.setSignOut(false);
+
+    //redirect
+    return <Navigate replace to={"/"} />;
+  };
+
+  const createAnAccount = () => {
+    const formData = new FormData(form.current);
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
+    //crear cuenta
+    const stringfieldAccount = JSON.stringify(data);
+    localStorage.setItem("sign-out", stringfieldAccount);
+    context.setAccount(data);
+
+    handleSignIn();
+  };
 
   const renderLogIn = () => {
     return (
@@ -34,6 +59,7 @@ function SignIn() {
           <button
             disabled={!hasUserAnAccount}
             className="w-full py-3 mt-4 mb-2 text-white bg-black rounded-lg disabled:bg-black/40"
+            onClick={() => handleSignIn()}
           >
             Login
           </button>
@@ -62,7 +88,7 @@ function SignIn() {
       <form ref={form} className="flex flex-col gap-4 w-80">
         <div className="flex flex-col gap-1">
           <label htmlFor="name" className="text-sm font-light">
-            Your name:
+            Nombre:
           </label>
           <input
             type="text"
@@ -70,9 +96,43 @@ function SignIn() {
             name="name"
             defaultValue={parsedAccount?.name}
             placeholder="John"
-            className="px-4 py-2 border border-black rounded-lg placeholder:font-light placeholder:text-sm placeholder:text-black/40 focus:outline-none"
+            className="px-4 py-2 border border-black rounded-lg placeholder:font-light placeholder:text-sm placeholder:text-black/60 focus:outline-none"
           />
         </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="email" className="text-sm font-light">
+            Nombre:
+          </label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            defaultValue={parsedAccount?.email}
+            placeholder="johndoe@gmail.com"
+            className="px-4 py-2 border border-black rounded-lg placeholder:font-light placeholder:text-sm placeholder:text-black/60 focus:outline-none"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="password" className="text-sm font-light">
+            Nombre:
+          </label>
+          <input
+            type="text"
+            id="password"
+            name="password"
+            defaultValue={parsedAccount?.email}
+            placeholder="****************"
+            className="px-4 py-2 border border-black rounded-lg placeholder:font-light placeholder:text-sm placeholder:text-black/60 focus:outline-none"
+          />
+        </div>
+        <Link to="/">
+          <button
+            className="w-full py-3 text-white bg-black rounded-lg"
+            onClick={() => createAnAccount()}
+          >
+            Crear
+          </button>
+        </Link>
       </form>
     );
   };

@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 import { NavLink } from "react-router-dom";
 import { ShoppingCartContext } from "../../Context";
+import ShoppingCart from "../ShoppingCart";
 
 const Navbar = () => {
   const context = useContext(ShoppingCartContext);
@@ -12,35 +12,35 @@ const Navbar = () => {
   const parsedSignOut = JSON.parse(signOut);
   const isUserSignOut = context.signOut || parsedSignOut;
 
+  //Cuenta
+  const account = localStorage.getItem("account");
+  const parsedAccount = JSON.parse(account);
+  // tiene una cuenta
+  const noAccountLocalStorage = parsedAccount
+    ? Object.keys(parsedAccount).length === 0
+    : true;
+  const noAccountLocalState = parsedAccount
+    ? Object.keys(context.account).length === 0
+    : true;
+  const hasUserAnAccount = !noAccountLocalStorage || !noAccountLocalState;
+
   const handleSignOut = () => {
     const stringfieldSignOut = JSON.stringify(true);
-    localStorage.setItem("signOut", stringfieldSignOut);
+    localStorage.setItem("sign-out", stringfieldSignOut);
     context.setSignOut(true);
   };
 
   const renderView = () => {
-    if (isUserSignOut) {
-      return (
-        <li>
-          <NavLink
-            to="/sign-in"
-            className={({ isActive }) => (isActive ? activeStyle : undefined)}
-            onClick={() => handleSignOut()}
-          >
-            Sign Out
-          </NavLink>
-        </li>
-      );
-    } else {
+    if (hasUserAnAccount && !isUserSignOut) {
       return (
         <>
-          <li className="text-black/60">ottoniel@gmail.com.com</li>
+          <li className="text-black/60">{parsedAccount?.email}</li>
           <li>
             <NavLink
               to="/my-orders"
               className={({ isActive }) => (isActive ? activeStyle : undefined)}
             >
-              My Orders
+              Mis Ordenes
             </NavLink>
           </li>
           <li>
@@ -48,7 +48,7 @@ const Navbar = () => {
               to="/my-account"
               className={({ isActive }) => (isActive ? activeStyle : undefined)}
             >
-              My Account
+              Mi Cuenta
             </NavLink>
           </li>
           <li>
@@ -61,19 +61,32 @@ const Navbar = () => {
             </NavLink>
           </li>
           <li className="flex items-center">
-            <ShoppingCartIcon className="w-6 h-6 text-black" />
-            <div>{context.cartProducts.length}</div>
+            <ShoppingCart />
           </li>
         </>
+      );
+    } else {
+      return (
+        <li>
+          <NavLink
+            to="/sign-in"
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+            onClick={() => handleSignOut()}
+          >
+            Sign Out
+          </NavLink>
+        </li>
       );
     }
   };
 
   return (
-    <nav className="fixed top-0 z-10 flex items-center justify-between w-full px-8 py-5 text-sm font-light">
+    <nav className="fixed top-0 z-10 flex items-center justify-between w-full px-8 py-5 text-sm font-light bg-white">
       <ul className="flex items-center gap-3">
         <li className="text-lg font-semibold">
-          <NavLink to="/">Shopi</NavLink>
+          <NavLink to={`${isUserSignOut ? "/sign-in" : "/"}`}>
+            Nombre de tienda
+          </NavLink>
         </li>
         <li>
           <NavLink
@@ -81,7 +94,7 @@ const Navbar = () => {
             onClick={() => context.setSearchByCategory()}
             className={({ isActive }) => (isActive ? activeStyle : undefined)}
           >
-            All
+            Todo
           </NavLink>
         </li>
         <li>
@@ -90,7 +103,7 @@ const Navbar = () => {
             onClick={() => context.setSearchByCategory("clothes")}
             className={({ isActive }) => (isActive ? activeStyle : undefined)}
           >
-            Clothes
+            Ropa
           </NavLink>
         </li>
         <li>
@@ -108,7 +121,7 @@ const Navbar = () => {
             onClick={() => context.setSearchByCategory("shoes")}
             className={({ isActive }) => (isActive ? activeStyle : undefined)}
           >
-            Shoes
+            Zapatos
           </NavLink>
         </li>
       </ul>

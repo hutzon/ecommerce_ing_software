@@ -20,7 +20,7 @@ function Home() {
   return (
     <Layout>
       <div className="relative flex items-center justify-center mb-4 w-80">
-        <h1 className="text-2xl font-medium">Exclusive Products</h1>
+        <h1 className="text-2xl font-medium">Productos</h1>
       </div>
 
       <input
@@ -29,6 +29,7 @@ function Home() {
         className="p-4 mb-4 border border-black rounded-lg w-80 focus:outline-none"
         onChange={(e) => context.setSearchByTitle(e.target.value)}
       />
+
       <div className="grid w-full max-w-screen-lg grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
         {renderView()}
       </div>

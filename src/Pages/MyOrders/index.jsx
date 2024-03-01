@@ -3,6 +3,7 @@ import Layout from "../Home/Layout";
 import OrdersCard from "../../Components/OrdersCard";
 import { ShoppingCartContext } from "../../Context";
 import { Link } from "react-router-dom";
+import MyCarousel from "../../Components/MyCarousel";
 
 function MyOrders() {
   const context = useContext(ShoppingCartContext);
